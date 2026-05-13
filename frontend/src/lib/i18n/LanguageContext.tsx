@@ -35,7 +35,31 @@ interface Translations {
     packagesTitle: string;
     packagesSub: string;
   };
-  // Add more translations as needed
+  reviews: {
+    title: string;
+    subtitle: string;
+  };
+  tours: {
+    title: string;
+    subtitle: string;
+    exclusive: string;
+    details: string;
+  };
+  account: {
+    welcomeBack: string;
+    signInTo: string;
+    signInGoogle: string;
+    dontHave: string;
+    signup: string;
+    myBookings: string;
+    wishlist: string;
+    settings: string;
+    signOut: string;
+    noBookings: string;
+    noWishlist: string;
+    changePassword: string;
+    notificationSettings: string;
+  };
 }
 
 const translations: Record<Language, Translations> = {
@@ -69,6 +93,31 @@ const translations: Record<Language, Translations> = {
       viewAll: "View All",
       packagesTitle: "Exclusive Tour Packages",
       packagesSub: "Explore the world with our curated itineraries designed for the elite traveler."
+    },
+    reviews: {
+      title: "What Our Happy Guests Say",
+      subtitle: "Real experiences from real travelers"
+    },
+    tours: {
+      title: "International Tour Packages",
+      subtitle: "Explore the world with our curated itineraries",
+      exclusive: "Exclusive Package",
+      details: "Details"
+    },
+    account: {
+      welcomeBack: "Welcome Back",
+      signInTo: "Sign in to manage your bookings",
+      signInGoogle: "Sign in with Google",
+      dontHave: "Don't have an account?",
+      signup: "Sign up",
+      myBookings: "My Bookings",
+      wishlist: "Wishlist",
+      settings: "Settings",
+      signOut: "Sign Out",
+      noBookings: "No bookings yet",
+      noWishlist: "No saved places yet",
+      changePassword: "Change Password",
+      notificationSettings: "Notification Settings"
     }
   },
   ar: {
@@ -101,6 +150,31 @@ const translations: Record<Language, Translations> = {
       viewAll: "عرض الكل",
       packagesTitle: "برامج سياحية حصرية",
       packagesSub: "استكشف العالم من خلال مساراتنا المنسقة والمصممة للمسافرين النخبة."
+    },
+    reviews: {
+      title: "آراء عملائنا الراضين",
+      subtitle: "تجارب حقيقية من مسافرين حقيقيين"
+    },
+    tours: {
+      title: "برامج سياحية عالمية",
+      subtitle: "استكشف العالم مع برامجنا المنسقة بعناية",
+      exclusive: "برنامج حصري",
+      details: "تفاصيل"
+    },
+    account: {
+      welcomeBack: "مرحباً بعودتك",
+      signInTo: "سجّل دخولك لمتابعة حجوزاتك",
+      signInGoogle: "دخول بـ Google",
+      dontHave: "ليس لديك حساب؟",
+      signup: "أنشئ حساباً",
+      myBookings: "حجوزاتي",
+      wishlist: "المفضلة",
+      settings: "الإعدادات",
+      signOut: "تسجيل خروج",
+      noBookings: "لا توجد حجوزات حتى الآن",
+      noWishlist: "لم تضف أي مكان مفضل بعد",
+      changePassword: "تغيير كلمة المرور",
+      notificationSettings: "إعدادات الإشعارات"
     }
   }
 };
