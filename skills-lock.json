@@ -1,11 +1,47 @@
 {
   "version": 1,
   "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "computedHash": "228f87d57035100d9dc6efcfc05aafd4b6e3962adacaa04b8217ab2fadb15dc8"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+    },
+    "google-hotels": {
+      "source": "skillhq/hotel-search",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "97f8ddc844a51f521ab45324e632aa2231d9226dc0b113da22bcdd2fe8cf15ed"
+    },
+    "travel-planner": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "skillPath": "packages/skills/travel-planner/SKILL.md",
+      "computedHash": "8113d0f20375354d347894c745b8dc9ecbe4c585f1680e5af77a71c81ce80d07"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "1d70f4e82bae766934977ea6fb32623358e2ecb562926f7d2cd8ca6c31024cc5"
+    },
     "ux-writing-arabic": {
       "source": "itady74/ux-writing-arabic",
       "sourceType": "github",
       "skillPath": "SKILL.md",
       "computedHash": "7711659aa3023d9ff37b77c5c54e769d7f1ad5a5e2daef47171b3c3c7b8265af"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
     }
   }
 }
