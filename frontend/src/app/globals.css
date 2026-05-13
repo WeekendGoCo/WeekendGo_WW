@@ -1,40 +1,97 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a; /* Slate 900 for a deep luxurious feel */
-  --foreground: #f8fafc; /* Slate 50 */
-  --primary: #fbbf24; /* Amber 400 for a luxurious gold */
-  --primary-dark: #d97706; /* Amber 600 */
-  --card-bg: #1e293b; /* Slate 800 */
+  --background: #F5F7FA; /* Light Gray */
+  --foreground: #0D1B2A; /* Dark Navy */
+  --primary: #0077C8;    /* Primary Blue */
+  --secondary: #22C7F2;  /* Sky Blue */
+  --accent: #A3E635;     /* Lime Green */
+  --dark: #0D1B2A;       /* Dark Navy */
+  --slate: #1F2937;      /* Deep Slate */
+  
+  --card-bg: #FFFFFF;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+.dark {
+  --background: #0D1B2A;
+  --foreground: #F5F7FA;
+  --card-bg: #1F2937;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-dark: var(--dark);
+  --color-slate: var(--slate);
   --color-card: var(--card-bg);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  
+  --font-cairo: var(--font-cairo);
+  --font-tajawal: var(--font-tajawal);
+  --font-poppins: var(--font-poppins);
+  --font-inter: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-inter), var(--font-tajawal), sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom Utilities for glassmorphism */
+/* Typography Helpers */
+.h-font {
+  font-family: var(--font-poppins), var(--font-cairo), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.b-font {
+  font-family: var(--font-inter), var(--font-tajawal), sans-serif;
+}
+
+/* Premium Visual Effects */
 .glass {
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(13, 27, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .lux-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.accent-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.shadow-premium {
+  box-shadow: 0 20px 40px -15px rgba(13, 27, 42, 0.1);
+}
+
+/* RTL Adjustments */
+[dir="rtl"] .ltr-only {
+  display: none;
+}
+
+[dir="ltr"] .rtl-only {
+  display: none;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
 }

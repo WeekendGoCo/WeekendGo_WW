@@ -1,94 +1,85 @@
 import { NextResponse } from 'next/server';
 
-// Simulating the Backend Aggregator Logic
 export async function POST(request: Request) {
   try {
-    const { destination, checkIn, checkOut, guests } = await request.json();
+    const { destination, destId, checkIn, checkOut, guests } = await request.json();
 
-    // 1. Simulate API Call to WebBeds (Live Pricing & Availability)
-    const webBedsData = await simulateWebBedsAPI(destination);
+    // Default dates if not provided (for demonstration)
+    const today = new Date();
+    const future = new Date();
+    future.setDate(today.getDate() + 7);
+    
+    const cin = checkIn || today.toISOString().split('T')[0];
+    const cout = checkOut || future.toISOString().split('T')[0];
 
-    // 2. Simulate API Call to Booking.com (Taxonomy & Ratings)
-    const bookingData = await simulateBookingAPI(destination);
+    let targetDestId = destId;
 
-    // 3. Simulate DB Call to Local Contracts (Micro-Extranet Exclusives)
-    const localContracts = await fetchLocalContracts(destination);
+    // 1. If no destId, fetch it first
+    if (!targetDestId && destination) {
+      const locRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/locations/search?query=${encodeURIComponent(destination)}`);
+      const locData = await locRes.json();
+      if (locData && locData.length > 0) {
+        targetDestId = locData[0].id;
+      }
+    }
 
-    // 4. Mapping & De-duplication Engine
-    // In a real app, we use GIATA IDs or fuzzy name matching. Here we simulate the merge.
-    const mergedResults = mergeAndDeduplicate(webBedsData, bookingData, localContracts);
+    if (!targetDestId) {
+      return NextResponse.json({ success: false, message: "Destination not found" }, { status: 404 });
+    }
 
-    // 5. Apply ranking/sorting (e.g., prioritize local contracts)
-    const sortedResults = mergedResults.sort((a, b) => {
-      if (a.isExclusive && !b.isExclusive) return -1;
-      if (!a.isExclusive && b.isExclusive) return 1;
-      return a.price - b.price; // Default sort by price
+    // 2. Fetch Hotels from Booking.com (Taxonomy & Content)
+    const bookingUrl = `https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels?dest_id=${targetDestId}&search_type=city&arrival_date=${cin}&departure_date=${cout}&adults_number=${guests || 2}&units=metric&room_number=1`;
+    
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY || '',
+        'x-rapidapi-host': process.env.RAPIDAPI_HOST || ''
+      }
+    };
+
+    const bookingRes = await fetch(bookingUrl, options);
+    const bookingResult = await bookingRes.json();
+
+    if (!bookingResult.status || !bookingResult.data?.hotels) {
+      return NextResponse.json({ success: false, message: "Failed to fetch hotels from provider" }, { status: 500 });
+    }
+
+    // 3. Transform & Merge with "Webbeds" Logic
+    // In a real scenario, we'd call Webbeds API here. 
+    // The user mentioned: Webbeds price < Booking price, then add profit.
+    
+    const transformedHotels = bookingResult.data.hotels.map((hotel: any) => {
+      const bookingPrice = hotel.property?.priceBreakdown?.grossAmount?.value || 500;
+      
+      // Simulating Webbeds: Typically 15-20% lower than retail (Booking.com)
+      const webbedsWholesalePrice = bookingPrice * 0.85; 
+      
+      // Adding Weekend Go Profit (e.g., 5%)
+      const finalPrice = Math.round(webbedsWholesalePrice * 1.05);
+
+      return {
+        id: hotel.hotel_id,
+        name: hotel.property?.name,
+        location: hotel.property?.wishlistName || destination,
+        image: hotel.property?.photoUrls?.[0]?.replace('square60', 'max1280x900') || '/dest-dubai.png',
+        rating: hotel.property?.reviewScore || 4.5,
+        reviews: hotel.property?.reviewCount || 120,
+        price: finalPrice,
+        originalPrice: bookingPrice,
+        isExclusive: hotel.property?.reviewScore > 8.5, // Simulate exclusive status for high rated hotels
+        amenities: ['Wifi', 'Pool', 'Breakfast'] // Booking search usually doesn't return full amenities, would need hotelDetails call
+      };
     });
 
     return NextResponse.json({
       success: true,
-      count: sortedResults.length,
-      data: sortedResults
+      count: transformedHotels.length,
+      data: transformedHotels
     });
 
   } catch (error) {
     console.error("Search API Error:", error);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
-}
-
-// --- Stub Functions to Simulate Architecture ---
-
-async function simulateWebBedsAPI(destination: string) {
-  return [
-    { providerId: 'WB001', name: 'Atlantis The Royal', price: 900, available: true },
-    { providerId: 'WB002', name: 'Burj Al Arab', price: 1250, available: true }
-  ];
-}
-
-async function simulateBookingAPI(destination: string) {
-  return [
-    { providerId: 'BKG101', name: 'Atlantis The Royal', rating: 4.9, reviews: 1200, amenities: ['Pool', 'Spa'] },
-    { providerId: 'BKG102', name: 'Burj Al Arab Jumeirah', rating: 5.0, reviews: 800, amenities: ['Beach', 'Butler'] }
-  ];
-}
-
-async function fetchLocalContracts(destination: string) {
-  // Simulating our Prisma DB query
-  return [
-    { id: 'LC_001', hotelName: 'Atlantis The Royal', price: 850, isExclusive: true }
-  ];
-}
-
-function mergeAndDeduplicate(webbeds: any[], booking: any[], local: any[]) {
-  // Simplified deduplication based on exact name match for demonstration
-  const finalHotels = [];
-
-  const allNames = new Set([
-    ...webbeds.map(h => h.name),
-    ...booking.map(h => h.name.replace(' Jumeirah', '')), // Simulating fuzzy match
-    ...local.map(h => h.hotelName)
-  ]);
-
-  for (const name of allNames) {
-    const wData = webbeds.find(h => h.name === name) || { price: 9999 };
-    const bData = booking.find(h => h.name.includes(name)) || { rating: 4.5, reviews: 100, amenities: [] };
-    const lData = local.find(h => h.hotelName === name);
-
-    // Local contract price overrides WebBeds if available
-    const finalPrice = lData ? lData.price : wData.price;
-    const isExclusive = !!lData;
-
-    finalHotels.push({
-      name,
-      price: finalPrice,
-      rating: bData.rating,
-      reviews: bData.reviews,
-      amenities: bData.amenities,
-      isExclusive,
-      image: '/dest-dubai.png' // Fallback to TBO cached image
-    });
-  }
-
-  return finalHotels;
 }
